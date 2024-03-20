@@ -1,0 +1,47 @@
+import streamlit as st
+import pickle
+from PIL import Image
+
+def main():
+    st.title(":rainbow[EMPLOYEE LEAVE PREDICTION]")
+    image=Image.open("managing-employee-leave.png")
+    st.image(image,width=800)
+    edu=st.selectbox("Education",['Bachelors','Masters','PHD'])
+    if edu=='Bachelors':
+        edu=0
+    elif edu=='Masters':
+        edu=1
+    elif edu=='PHD':
+        edu=2
+    joining=st.text_input("Joining Year",placeholder="Type here")
+    city=st.radio('City',['Banglore','Pune','New Delhi'])
+    if city=='Banglore':
+        city=0
+    elif city=='Pune':
+        city=1
+    elif city=='New Delhi':
+       city=2
+    Payment=st.text_input("PayementTier",placeholder="Type here")
+    Age=st.text_input('Age',placeholder= 'Type here')
+    gender=st.radio("Gender",['Male','Female'])
+    if gender=='Male':
+        gender=1
+    else:
+        gender=0
+    benches=(st.radio('EverBenched',['Yes','No']))
+    if benches=='Yes':
+        benches=1
+    else:
+        benches=0
+    Experience=st.text_input('Experience in current domain',placeholder='Type here')
+    features=[edu,joining,city,Payment,Age,gender,benches,Experience]
+    model=pickle.load(open('model_bank.sav','rb'))
+    scaler=pickle.load(open('scaler_bank.sav','rb'))
+    pred=st.button('PREDICT')
+    if pred:
+        prediction=model.predict(scaler.transform([features]))
+        if prediction==0:
+            st.write("Employee will not take the leave")
+        else:
+            st.write("Employee will take the leave")
+main()
